@@ -1,0 +1,16 @@
+flowchart LR
+    subgraph CAUSAS["Causas"]
+        C1["Monitoreo en etapa inicial"]
+        C2["Logs y métricas dispersos,<br/>con criterios distintos"]
+        C3["Federación de catálogos<br/>sin seguimiento automático"]
+        C4["Frescura del catálogo<br/>sin medir"]
+    end
+    P(["Problema central:<br/>falta evidencia sistemática<br/>sobre disponibilidad, uso y calidad<br/>de los servicios de datos"])
+    subgraph EFECTOS["Efectos"]
+        E1["Caídas detectadas tarde;<br/>impacto en sistemas que dependen de las APIs"]
+        E2["Priorización con poca evidencia"]
+        E3["Reportes manuales<br/>y difíciles de comparar"]
+        E4["Acompañamiento a organismos<br/>y provincias sin datos de base"]
+        E5["Menos evidencia para comunicar<br/>el valor de la apertura"]
+    end
+    C1 & C2 & C3 & C4 --> P --> E1 & E2 & E3 & E4 & E5

@@ -1,0 +1,116 @@
+erDiagram
+    DIM_FECHA ||--o{ FACT_USO_HORA : "fecha_id"
+    DIM_SERVICIO ||--o{ DIM_ENDPOINT : "tiene"
+    DIM_ENDPOINT ||--o{ FACT_USO_HORA : "endpoint_id"
+    DIM_ENDPOINT ||--o{ FACT_DISPONIBILIDAD_MIN : "endpoint_id"
+    DIM_TIPO_CLIENTE ||--o{ FACT_USO_HORA : "tipo_cliente"
+    DIM_RECURSO ||--o{ FACT_USO_HORA : "recurso_id"
+    DIM_DATASET ||--o{ DIM_RECURSO : "dataset_id"
+    DIM_DATASET ||--o{ DIM_SERIE : "contiene"
+    DIM_ORGANIZACION ||--o{ DIM_DATASET : "publica"
+    DIM_DATASET ||--o{ FACT_FRESCURA_DIA : "dataset_id"
+    DIM_FECHA ||--o{ FACT_FRESCURA_DIA : "fecha_id"
+    DIM_PROVINCIA ||--o{ FACT_GEOREF_DIA : "provincia_id"
+    DIM_FECHA ||--o{ FACT_GEOREF_DIA : "fecha_id"
+    DIM_FECHA ||--o{ FACT_JOB_RUN : "fecha_id"
+
+    FACT_USO_HORA {
+        date fecha_id FK
+        int hora
+        string endpoint_id FK
+        string recurso_id FK
+        string tipo_cliente FK
+        bigint requests
+        bigint errores_4xx
+        bigint errores_5xx
+        bigint clientes_unicos_aprox
+        double latencia_p50_ms
+        double latencia_p95_ms
+        bigint bytes
+    }
+    FACT_DISPONIBILIDAD_MIN {
+        timestamp minuto
+        string endpoint_id FK
+        string region
+        boolean disponible
+        int http_status
+        double latencia_ms
+        int dias_vence_certificado
+    }
+    FACT_FRESCURA_DIA {
+        date fecha_id FK
+        string dataset_id FK
+        string periodicidad_declarada
+        int dias_desde_actualizacion
+        boolean en_termino
+        int distribuciones_rotas
+    }
+    FACT_GEOREF_DIA {
+        date fecha_id FK
+        string provincia_id FK
+        string endpoint_id
+        bigint consultas
+        bigint sin_resultado
+        double tasa_normalizacion
+    }
+    FACT_JOB_RUN {
+        string run_id PK
+        date fecha_id FK
+        string job
+        string estado
+        double duracion_s
+        bigint filas_procesadas
+    }
+    DIM_DATASET {
+        string dataset_id PK
+        string titulo
+        string organizacion_id FK
+        string tema
+        string periodicidad
+        timestamp valido_desde
+        timestamp valido_hasta
+        boolean vigente
+    }
+    DIM_SERIE {
+        string serie_id PK
+        string dataset_id FK
+        string titulo
+        string frecuencia
+        string unidades
+    }
+    DIM_RECURSO {
+        string recurso_id PK
+        string tipo
+        string dataset_id FK
+    }
+    DIM_ORGANIZACION {
+        string organizacion_id PK
+        string nombre
+        string nivel
+    }
+    DIM_ENDPOINT {
+        string endpoint_id PK
+        string servicio_id FK
+        string ruta
+        string metodo
+    }
+    DIM_SERVICIO {
+        string servicio_id PK
+        string nombre
+        double slo_disponibilidad
+    }
+    DIM_TIPO_CLIENTE {
+        string tipo_cliente PK
+        string descripcion
+    }
+    DIM_PROVINCIA {
+        string provincia_id PK
+        string nombre
+    }
+    DIM_FECHA {
+        date fecha_id PK
+        int anio
+        int mes
+        int dia_semana
+        boolean feriado
+    }

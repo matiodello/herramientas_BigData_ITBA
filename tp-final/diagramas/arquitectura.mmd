@@ -1,0 +1,48 @@
+flowchart LR
+    subgraph FUENTES["Fuentes"]
+        P["Portal datos.gob.ar<br/>(CKAN)"]
+        S["API Series de Tiempo"]
+        G["API Georef"]
+        J["Jobs de indexación<br/>y harvesting"]
+    end
+
+    subgraph CALIENTE["Camino caliente"]
+        M["Monitor operativo<br/>sondas HTTP/TLS cada 1 min"]
+        AL["Alertas<br/>correo / chat"]
+    end
+
+    subgraph INGESTA["Ingesta"]
+        V["Agente de logs<br/>(Vector / Fluent Bit)<br/>seudonimiza IP"]
+        H["Job diario<br/>descarga catálogos<br/>y metadatos"]
+    end
+
+    subgraph LAKE["Lakehouse: Databricks + Delta Lake (almacenamiento de objetos)"]
+        LZ[("Landing<br/>JSON Lines por minuto")]
+        B[("Bronze<br/>crudo + archivo + hora")]
+        SV[("Silver<br/>limpio, tipado,<br/>deduplicado")]
+        GD[("Gold<br/>modelo estrella")]
+        Q[("Cuarentena")]
+    end
+
+    subgraph CONSUMO["Consumo"]
+        D["Paneles Databricks SQL<br/>por equipo"]
+        R["Reporte mensual<br/>publicado como dataset"]
+        ML["Modelo de anomalías<br/>(MLflow)"]
+    end
+
+    P & S & G -- "logs de acceso" --> V --> LZ
+    M -- "sondea" --> P & S & G
+    M --> AL
+    M -- "resultados" --> LZ
+    J -- "logs de ejecución" --> V
+    P -- "data.json" --> H
+    S -- "metadatos CSV" --> H
+    H --> LZ
+    LZ -- "Auto Loader" --> B
+    B -- "Lakeflow Declarative Pipelines<br/>+ expectations" --> SV
+    B -. "registros inválidos" .-> Q
+    SV --> GD
+    GD --> D & R & ML
+
+    UC{{"Unity Catalog<br/>permisos · linaje · enmascaramiento"}}
+    UC -.- LAKE
