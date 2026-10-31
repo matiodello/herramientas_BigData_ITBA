@@ -19,16 +19,6 @@ Propongo una plataforma de datos que junte logs de acceso, chequeos de disponibi
 | [`graficos/generar_graficos.py`](graficos/generar_graficos.py) | Script con los supuestos de volumen; genera los tres gráficos |
 | `graficos/*.png` | Volumen diario por fuente, almacenamiento acumulado y latencia requerida por uso |
 
-## Cómo revisarlo
-
-1. Abrir `caso_de_negocio.md` en GitHub, que muestra los diagramas Mermaid dentro del documento. Fuera de GitHub, los `.mmd` se pueden pegar en <https://mermaid.live>.
-2. Para regenerar los gráficos o cambiar los supuestos:
-   ```bash
-   pip install matplotlib
-   python graficos/generar_graficos.py
-   ```
-   El script imprime el dimensionamiento que resulta: eventos por segundo, GB por día y almacenamiento a 24 meses.
-
 ## Datos y supuestos
 
 Los servicios y sus metadatos son públicos. Los volúmenes, las tasas y las metas son estimaciones mías: están marcados con **(E)** en el documento y concentrados en el diccionario `FUENTES` del script. Esta variante no implementa la plataforma.
